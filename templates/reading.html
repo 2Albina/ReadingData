@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Reading Data
+{% endblock %}
+
+{% block body %}
+    <h5>Выберите диапазон</h5>
+    <form action="/get-rates" method="post">
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="start-date" required>
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" name="end-date" required>
+        <button type="submit">Получить</button>
+    </form>
+    {% if results %}
+    <h2 align="center">Результаты</h2>
+
+        <h3>Курсы валют</h3>
+        {% for courses in results.courses_arr %}
+            <a>{{ courses.description }}</a><br>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        {% for header in courses.courses_headers %}
+                            <th>{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in courses.courses_data %}
+                        <tr>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table><br>
+        {% endfor %}
+
+        <h3>Таблица относительных изменений курса</h3>
+        <a>Базовая дата: {{ results.base_date }}</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Currency</th>
+                    <th>Relative Change (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results.relative_changes_data %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Список валют стран мира</h3>
+        <containaer>
+            <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            {% for header in results.world_currencies_table_headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in results.world_currencies_table_data %}
+                            <tr>
+                                {% for cell in row %}
+                                    <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </containaer>
+
+    {% endif %}
+{% endblock %}
